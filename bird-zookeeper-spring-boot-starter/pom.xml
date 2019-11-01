@@ -23,7 +23,6 @@
         <dependency>
             <groupId>com.bird</groupId>
             <artifactId>bird-zookeeper</artifactId>
-            <version>${bird.version}</version>
         </dependency>
 
         <dependency>

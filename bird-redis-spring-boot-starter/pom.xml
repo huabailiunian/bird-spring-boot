@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.bird</groupId>
             <artifactId>bird-redis</artifactId>
-            <version>${bird.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
