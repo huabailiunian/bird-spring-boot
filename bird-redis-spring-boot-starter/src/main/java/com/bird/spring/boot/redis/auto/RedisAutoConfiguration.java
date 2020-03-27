@@ -15,8 +15,6 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -29,6 +27,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Redis 客户端配置类
@@ -41,8 +40,6 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "bird.redis", name = "enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties({RedisProperties.class})
 public class RedisAutoConfiguration {
-
-    private static final Logger logger = LoggerFactory.getLogger(RedisAutoConfiguration.class);
 
     private RedisProperties redisProperties;
 
@@ -71,7 +68,7 @@ public class RedisAutoConfiguration {
         config.setCodec(CodecFactory.defaultCodec());
         String password = redisProperties.getPassword();
         RedisProperties.Cluster cluster = redisProperties.getCluster();
-        if (null != cluster) {
+        if (Objects.nonNull(cluster)) {
             ClusterServersConfig clusterServers = config.useClusterServers();
             String[] nodes = cluster.getNodes().stream().map(AddressValidator::validate).toArray(String[]::new);
             clusterServers.addNodeAddress(nodes);
@@ -85,7 +82,7 @@ public class RedisAutoConfiguration {
             }
         } else {
             RedisProperties.Single single = redisProperties.getSingle();
-            if (single != null) {
+            if (Objects.nonNull(single)) {
                 SingleServerConfig singleServer = config.useSingleServer();
                 singleServer.setAddress(AddressValidator.validate(single.getHost()))
                         .setConnectionMinimumIdleSize(single.getPool().getMinIdleSize())
@@ -101,9 +98,9 @@ public class RedisAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "bird.redis.mq", name = "client", havingValue = "true", matchIfMissing = true)
     public RedisMQClient redisMQClient(RedisClient redisClient) {
-        RedisMQClient redisMQClient = new RedisMQClient(redisClient);
-        redisMQClient.setTimeout(redisProperties.getMq().getTimeout());
-        return redisMQClient;
+        RedisMQClient client = new RedisMQClient(redisClient);
+        client.setTimeout(redisProperties.getMq().getTimeout());
+        return client;
     }
 
     @Bean
@@ -119,8 +116,8 @@ public class RedisAutoConfiguration {
     @Bean
     @ConditionalOnBean({RedisConsumer.class})
     @ConditionalOnProperty(prefix = "bird.redis.mq", name = "consumer", havingValue = "true", matchIfMissing = true)
-    public ConsumerContainer redisMQConsumerContainer(RedisClient redisClient, @Qualifier(value = "redisMQExecutor") AsyncListenableTaskExecutor taskExecutor,
-                                                      List<RedisConsumer> redisConsumers) {
+    public ConsumerContainer redisConsumerContainer(RedisClient redisClient, @Qualifier(value = "redisMQExecutor") AsyncListenableTaskExecutor taskExecutor,
+                                                    List<RedisConsumer> redisConsumers) {
         DefaultRedisConsumerContainer consumerContainer = new DefaultRedisConsumerContainer(redisClient);
         consumerContainer.setListenerTaskExecutor(taskExecutor);
         consumerContainer.setConsumers(redisConsumers);
