@@ -1,13 +1,13 @@
 package com.bird.spring.boot.redis.auto;
 
-import com.bird.core.executor.ExecutorConfig;
-import com.bird.core.executor.ExecutorFactory;
 import com.bird.redis.client.RedisClient;
 import com.bird.redis.codec.CodecFactory;
 import com.bird.redis.message.ConsumerContainer;
 import com.bird.redis.message.RedisConsumer;
 import com.bird.redis.message.impl.DefaultRedisConsumerContainer;
 import com.bird.redis.message.impl.RedisMQClient;
+import com.bird.spring.boot.redis.executor.ExecutorConfig;
+import com.bird.spring.boot.redis.executor.ExecutorFactory;
 import com.bird.spring.boot.redis.properties.RedisProperties;
 import com.bird.spring.boot.redis.validator.AddressValidator;
 import org.redisson.Redisson;

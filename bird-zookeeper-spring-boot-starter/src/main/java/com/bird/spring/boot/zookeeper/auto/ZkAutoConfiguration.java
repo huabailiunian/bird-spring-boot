@@ -1,8 +1,8 @@
 package com.bird.spring.boot.zookeeper.auto;
 
 import com.bird.spring.boot.zookeeper.properties.ZkProperties;
+import com.bird.zookeeper.service.DefaultZkService;
 import com.bird.zookeeper.service.ZkService;
-import com.bird.zookeeper.service.ZkServiceImpl;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -52,7 +52,7 @@ public class ZkAutoConfiguration {
 
     @Bean
     public ZkService zkService(CuratorFramework curatorFramework) {
-        return new ZkServiceImpl(curatorFramework);
+        return new DefaultZkService(curatorFramework);
     }
 
 }

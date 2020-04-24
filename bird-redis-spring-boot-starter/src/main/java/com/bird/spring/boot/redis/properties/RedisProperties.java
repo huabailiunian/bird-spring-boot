@@ -1,6 +1,6 @@
 package com.bird.spring.boot.redis.properties;
 
-import com.bird.core.executor.ExecutorConfig;
+import com.bird.spring.boot.redis.executor.ExecutorConfig;
 import org.redisson.config.ReadMode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
